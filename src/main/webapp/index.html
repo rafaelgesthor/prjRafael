@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html ng-app="laudoManagerApp" lang="pt-br" dir="ltr" xmlns:article="http://ogp.me/ns/article#" xmlns:book="http://ogp.me/ns/book#" xmlns:product="http://ogp.me/ns/product#" xmlns:profile="http://ogp.me/ns/profile#" xmlns:video="http://ogp.me/ns/video#" prefix="content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# ">
+    <head>
+		<meta charset="utf-8" />
+		<meta name="title" content="Resultados de Exames" />
+		<meta name="MobileOptimized" content="width" />
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="themes/gth/dist/images/favicon.ico" type="image/vnd.microsoft.icon" />
+		<title>Resultados de Exames | HOP</title>
+		
+ 		<style media="all">	 
+ 			@import url("core/assets/vendor/normalize-css/normalize.css"); 
+
+			@import url("core/themes/classy/css/components/breadcrumb.css");
+			 			
+			@import url("themes/gth/dist/css/styles.css");
+			@import url("themes/gth/dist/css/colors.css");
+			@import url("themes/gth/dist/css/vendor.css");			  			
+  			@import url("themes/gth/dist/css/formStyles.css");
+  						  			
+   			@import url("themes/gth/area/css/nav-header.css");   						
+   			@import url("themes/gth/area/css/table.css"); 
+		</style>
+
+		<script src="https://kit.fontawesome.com/b01bb6499c.js"></script>
+		
+		<script data-require="angular.js@*" data-semver="1.3.0-beta.14" src="http://code.angularjs.org/1.3.0-beta.14/angular.js"></script>
+		<script data-require="angular-animate@*" data-semver="1.3.0-beta.14" src="http://code.angularjs.org/1.3.0-beta.14/angular-animate.js"></script>		
+	</head>	
+	
+	<body>
+	
+	<div ng-controller="laudoManagerController">
+		
+		<div class="header sticky-header" id="sticky">
+
+			<div class="header-desktop">
+				<header class="main-header -cms-default header-background">
+
+					<div class="row">
+						<div class="col-xs-12 col-md-4">
+							<a href="/" title="Home" rel="home" class="site-logo" id="header-pacientes">
+								<img src="themes/gth/dist/images/logo_hop-white.png" alt="Home" title="Home" />
+							</a>						
+						</div>
+
+						<div class="col-xs-12 col-md-8 text-right">
+							<div class="row">
+								<div class="region region-header-content">
+									<div class="col-md-4 col-md-offset-4 col-12 text-right block block-block-content">				
+										<div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item">
+											<p><a class="schedule-consults tertiary-color" href="#">Agendar Consultas</a></p>
+										</div>				
+									</div>
+									<div class="col-md-4 col-12 text-center block block-block-content">
+										<div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item">
+											<p><a class="schedule-exams quinary-background blank-color" href="#">Agendar Exames</a></p>
+										</div>            
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+										
+				</header>
+				
+				<div class="quinary-background blank-color" ng-hide="stateAcesso">
+					<span>&nbsp</span>
+				</div>
+				
+			</div>
+		</div>
+		
+		<header class="menu-main" ng-show="stateAcesso">
+			<navbar class="quinary-background blank-color">
+				<div class="logo">Resultado de Exames</div>
+				<nav class="list-inline">
+					<ul>
+						<li class="active nav-active quinary-color blank-background" ng-show="viewExame"><span ng-click="backProtocolo()">Protocolos</span></li>
+						<li class="active nav-noactive quinary-background blank-color"><span>&nbsp;</span></li>
+						<div class="right-menu">				
+ 							<li class="user user-padding">
+ 								<span ng-bind="pacienteLogado.nome"></span>
+ 							</li>
+							<li class="close-padding" ng-click="closeAcesso()">Sair</li>
+						</div>
+					</ul>
+				</nav>				
+				<div id="overllay"></div>
+			</navbar>
+						
+		</header>
+		
+			
+		<main role="main" class="sticky-content content-spacement">
+			<div class="container-fluid">				
+				<section class="page-protocolo" ng-show="stateAcesso">
+															
+					<!-- Requisicoes -->
+					
+					<div class="shadow-z-1" ng-hide="viewExame">
+						<table id="table" class="table table-hover table-condensed table-protocols zebraTab">
+							<thead>
+								<tr>
+									<th>Data da solicita&ccedil;&atilde;o</th>
+									<th>C&oacute;digo</th>
+									<th>M&eacute;dico Solicitante</th>
+									<th>Senha</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-click="loadExame(rex)" ng-repeat="rex in requisicoes">
+								    <td>{{ rex.fData + " " + rex.fHora  }}</td>
+								    <td>{{ rex.codigo }}</td>
+								    <td>{{ rex.solicitante }}</td>
+								    <td>{{ rex.senha }}</td>
+								</tr>														
+							</tbody>
+						</table>						
+					</div>							
+					
+					<!-- Exames -->
+					
+					<div class="shadow-z-1" ng-show="viewExame">
+						<table id="table" class="table table-hover table-condensed table-protocols zebraTab">
+							<thead>
+								<tr>
+									<th>C&oacute;digo</th>
+									<th>Exame</th>
+									<th>Situa&ccedil;&atilde;o</th>
+									<th>Laudista</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-click="loadPdf(exr)" ng-repeat="exr in exames">
+								    <td>{{ exr.codigo_anx }}</td>
+								    <td>{{ exr.exame }}</td>
+								    <td ng-if="exr.status == 'F'">Finalizado</td>
+								    <td ng-if="exr.status != 'F'">Pendente</td>
+								    <td>{{ exr.laudista }}</td>
+								    <td ng-if="exr.status == 'F'">
+								    	<img src="core/assets/gth/img/32x32/document-Check.png" alt="Laudo Finalizado" title="Laudo Finalizado"/>
+								    </td>
+								    <td ng-if="exr.status != 'F'">
+								    	<img src="core/assets/gth/img/32x32/document.png" alt="Laudo Pendente" title="Laudo Pendente"/>
+								    </td>
+								</tr>														
+							</tbody>
+						</table>
+					</div>					
+												
+				</section>			 	
+			 	
+			 	
+				<!-- Login -->
+			 	
+				<section class="page-login" ng-show="stateLogin">				
+				
+					<div class="row">
+						<div class="col-md-12">
+							<div class="region">
+								<div id="block-gth-breadcrumbs" class="block block-system">
+									<nav class="breadcrumb" role="navigation" aria-labelledby="system-breadcrumb">
+										<ol>
+											<li>
+												<a href="/" class="quinary-color">Home</a>
+											</li>
+											<li>
+												<span class="current-page octonary-color">Resultados de Exames</span>
+											</li>
+										</ol>
+									</nav>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-md-8">
+						    <div class="region region-content">
+							
+								<div id="block-acesso-content" class="block block-system block-system-main-block">   
+							
+									<section class="page-result-exams" ng-hide="stateAcesso">
+	
+										<div id="block-acesso-page-title" class="page-title block block-core block-page-title-block">
+											<h1 class="page-title senary-color senary-border-color">Resultados de Exames</h1>
+										</div>
+	
+										<form id="page-form-result-exams">
+	
+											<div class="form-group">
+												<div>
+													<label for="protocoloLogin" class="field-text-label">
+														Protocolo
+														<span class="helper">
+															<i class="fa fa-question-circle icon quinary-color" aria-hidden="true" 
+															   data-toggle="tooltip" data-placement="bottom" 
+															   title="Insira o c&oacute;digo do Protocolo"></i>
+														</span>
+													</label>
+												</div>
+												<div class="field-text-holder ">
+													<input style="text-transform:uppercase;font-variant:small-caps" type="text" name="numProtocolo" ng-model="numProtocolo" 
+														   placeholder="" autocomplete="off" id="protocoloLogin"
+														   class="form-control quinary-border-color nonary-color er-field-text" />
+												</div>
+											</div>
+	
+											<div class="form-group">
+												<div>
+													<label for="senhaLogin" class="field-text-label">
+														Senha
+														<span class="helper">
+															<i class="fa fa-question-circle icon quinary-color" aria-hidden="true" 
+															   data-toggle="tooltip" data-placement="bottom" 
+															   title="Insira a Senha do Protocolo"></i>
+														</span>
+													</label>
+												</div>
+												<div class="field-text-holder">
+													<input style="text-transform:uppercase;font-variant:small-caps" type="password" name="numSenha" ng-model="numSenha" placeholder="" 
+													       autocomplete="off" id="senhaLogin" 
+													       class="form-control quinary-border-color nonary-color er-field-text">
+												</div>
+											</div>
+											
+											<div>            
+												<button type="submit" class="action-button btn btn-block quinary-background blank-color" ng-click="checkAcesso()">Enviar</button>
+											</div>
+	
+										</form>
+	
+									</section>
+	
+								</div>
+	
+							</div>
+						</div>
+						<div class="col-md-4 siderbar-bottom"></div>
+					</div>					
+					
+				</section>					
+				
+			</div>
+		</main>		
+
+		<footer id="footer" class="clearfix footer-custom">   
+			<section class="pre-footer primary-background quinary-color">
+				<div class="region region-pre-footer">			
+					<div id="block-sociallinksblock" class="block">		
+						<h2>Siga nossas m&iacute;dias:</h2>			
+						<div class="social-links">
+							<ul class="list-unstyled list-inline">
+
+								<li class="list-single">
+									<a href="https://www.facebook.com/HospitaldeOlhosPR" class="link-btn quinary-color" target="blank">
+										<i class="fab fa-facebook-f link-image"></i>
+									</a>
+								</li>
+
+								<li class="list-single">
+									<a href="https://www.instagram.com/hospitaldeolhospr" class="link-btn quinary-color" target="blank">
+										<i class="fab fa-instagram link-image"></i>
+									</a>
+								</li>
+								
+								<li class="list-single">
+									<a href="https://www.youtube.com/user/hospitalolhosparana" class="link-btn quinary-color" target="blank">
+										<i class="fab fa-youtube link-image"></i>
+									</a>
+								</li>				
+								
+								<li class="list-single">
+									<a href="https://twitter.com/cuidedosolhos" class="link-btn quinary-color" target="blank">
+										<i class="fab fa-twitter link-image"></i>
+									</a>
+								</li>				
+												
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section> 
+		
+			<div class="pos-footer text-center quinary-background blank-color">
+				<h6>&copy; 2019 Gesthor Hospitalar. Todos os direitos reservados.</h6>
+			</div>
+		
+<!-- 			<a href="#" id="buttontop"> -->
+<!-- 				<svg width="46" height="46" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"> -->
+<!-- 					<path d="M44 22C44 34.1503 34.1503 44 22 44C9.84974 44 0 34.1503 0 22C0 9.84974 9.84974 0 22 0C34.1503 0 44 9.84974 44 22Z" transform="translate(1 0.999756)" class="primary-fill-color" /> -->
+<!-- 					<path fill-rule="evenodd" clip-rule="evenodd" d="M10.222 3.87622C14.0043 1.34888 18.4511 0 23 0C29.1 0 34.9501 2.42322 39.2635 6.73657C43.5768 11.0499 46 16.9 46 23C46 27.549 44.6511 31.9957 42.1238 35.7781C39.5965 39.5604 36.0044 42.5084 31.8018 44.2493C27.599 45.9901 22.9745 46.4454 18.513 45.5581C14.0514 44.6705 9.95315 42.4801 6.7366 39.2634C3.51993 36.0469 1.3295 31.9486 0.441923 27.4871C-0.445528 23.0255 0.0100381 18.401 1.75076 14.1982C3.49161 9.99561 6.4396 6.40344 10.222 3.87622ZM26.7959 19.7955H29.7243C29.9688 19.7971 30.2086 19.7273 30.4147 19.5942C30.6209 19.4611 30.7845 19.2705 30.8859 19.0454C30.9873 18.8204 31.0222 18.5706 30.9862 18.326C30.9505 18.0813 30.8454 17.8524 30.6836 17.6669L23.6241 9.5144C23.4837 9.35278 23.3108 9.22327 23.1168 9.13452C22.9231 9.0459 22.7128 9 22.5 9C22.2873 9 22.0769 9.0459 21.8832 9.13452C21.6892 9.22327 21.5164 9.35278 21.376 9.5144L14.3164 17.6669C14.1547 17.8524 14.0496 18.0813 14.0138 18.326C13.9778 18.5706 14.0127 18.8204 14.1142 19.0454C14.2156 19.2705 14.3792 19.4611 14.5854 19.5942C14.7914 19.7273 15.0313 19.7971 15.2758 19.7955H18.2043V33.8705C18.2043 34.1702 18.3218 34.4573 18.5313 34.6692C18.7408 34.8811 19.0248 35 19.3211 35H25.679C25.8256 35 25.971 34.9707 26.1064 34.9141C26.2418 34.8573 26.365 34.774 26.4688 34.6692C26.5724 34.5643 26.6547 34.4398 26.711 34.3027C26.767 34.1658 26.7959 34.0189 26.7959 33.8705V19.7955Z" transform="translate(0 -0.000244141)" fill="white" class="blank-stroke-color" stroke-width="1"/> -->
+<!-- 				</svg> -->
+<!-- 			</a> -->
+		
+			
+		</footer>
+	</div>
+
+		<script src="core/assets/vendor/jquery/jquery.min.js?v=3.2.1"></script>
+		<script src="core/assets/vendor/jquery-once/jquery.once.min.js?v=2.2.0"></script>
+
+		<script src="themes/gth/dist/js/vendor.js"></script>
+
+		<script src="themes/gth/angular/js/app.js"></script>
+		<script src="themes/gth/angular/js/angular-animate.js"></script>
+	
+	</body>
+	
+</html>	
